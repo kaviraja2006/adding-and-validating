@@ -17,13 +17,9 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-// Add pre-save middleware to hash password
 UserSchema.pre('save', async function(next) {
-    // Only hash the password if it's modified (or new)
     if (!this.isModified('pass')) return next();
-    
     try {
-        // Generate salt and hash password
         const salt = await bcrypt.genSalt(10);
         this.pass = await bcrypt.hash(this.pass, salt);
         next();
@@ -32,6 +28,5 @@ UserSchema.pre('save', async function(next) {
         next(error);
     }
 });
-
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
